@@ -24,33 +24,20 @@ async function run(){
         const usersCollection = database.collection('users');
         const reviewsCollection = database.collection('reviews');
 
-        await client.connect();
-        const database = client.db('Argon');
-        const productCollection = database.collection('products');
-        const purchasedCollection = database.collection('purchased');
-        const usersCollection = database.collection('users');
-        const reviewsCollection = database.collection('reviews');
-        //get all service we provide
+        //get all products
         app.get('/products', async (req, res) => {
             const cursor = productCollection.find({});
             const products = await cursor.toArray();
             res.send(products);
         });
-        // fetch by id
+        // search by ID
         app.get('/products/:id', async (req, res) => {
             const id = req.params.id;
             console.log(id);
             const query = { _id: ObjectId(id) }
-            const result = await productCollection.findOne(query);
+            const result = await serviceCollection.findOne(query);
             console.log('load', result);
             res.send(result);
-        });
-        //delete product
-        app.delete('/products/:id', async (req, res) => {
-            const id = req.params.id;
-            const query = { _id: ObjectId(id) }
-            const result = await serviceCollection.deleteOne(query);
-            res.json(result);
         });
         //save order data
         app.post('/purchased', async (req, res) => {
@@ -58,8 +45,8 @@ async function run(){
             const result = await purchasedCollection.insertOne(cursor);
             res.json(result);
         });
-        //find all the order
-        app.get('/purchased/allorder', async (req, res) => {
+         //find all the order
+         app.get('/purchased/allorder', async (req, res) => {
             const cursor = purchasedCollection.find({});
             const services = await cursor.toArray();
             res.send(services);
