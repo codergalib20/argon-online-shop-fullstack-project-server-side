@@ -34,28 +34,30 @@ async function run() {
       const products = await cursor.toArray();
       res.send(products);
     });
-    //get product by id_____________(not working)
-    app.get('/product/:id', async (req, res) => {
-      const product = await productCollection.findOne({ _id: ObjectId(req.params.id) });
-      res.send(product);
-    console.log(product);
-    })
+    // search by ID
+    app.get("/products/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = {key: id };
+      console.log(query)
+      const result = await productCollection.findOne(query);
+      console.log("load", result);
+      res.send(result);
+    });
     // Manage Products______
     app.delete("/manageProduct/:id", async (req, res) => {
-        const id = req.params.id;
-        const query = { _id: ObjectId(id) };
-        const product = await productCollection.deleteOne(query);
-        res.send(product);
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const product = await productCollection.deleteOne(query);
+      res.send(product);
     });
-
 
     // **********************************Here All cart Function
     // Get all cart items_____________
-    app.get('/cartCollection', async (req, res) => {
-        const cursor = userActionsProducts.find({status: "cart"});
-        const carts = await cursor.toArray();
-        res.send(carts);
-    })
+    app.get("/cartCollection", async (req, res) => {
+      const cursor = userActionsProducts.find({ status: "cart" });
+      const carts = await cursor.toArray();
+      res.send(carts);
+    });
     // Post to cart______
     app.post("/cart", async (req, res) => {
       const cursor = req.body;
@@ -63,10 +65,6 @@ async function run() {
       res.json(result);
       console.log(result);
     });
-
-
-
-
 
     // **********************************Here All purchased Function
     //find all the order
@@ -99,16 +97,16 @@ async function run() {
     });
     // get user from database
     app.get("/users", async (req, res) => {
-        const cursor = usersCollection.find({});
-        const users = await cursor.toArray();
-        res.send(users);
+      const cursor = usersCollection.find({});
+      const users = await cursor.toArray();
+      res.send(users);
     });
-    app.delete('/users/:id', async (req, res) => {
-        const id = req.params.id;
-        const query = { _id: ObjectId(id) };
-        const result = await usersCollection.deleteOne(query);
-        res.json(result);
-    })
+    app.delete("/users/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await usersCollection.deleteOne(query);
+      res.json(result);
+    });
     //set user in database
     app.put("/users", async (req, res) => {
       const user = req.body;
@@ -130,18 +128,18 @@ async function run() {
       const result = await usersCollection.updateOne(filter, updateDoc);
       res.json(result);
     });
-    app.get('/user/admin', async (req, res) => {
-        const cursor = usersCollection.find({ role: "admin" });
-        const users = await cursor.toArray();
-        res.send(users);
-    })
-   
-    app.delete('/cartCollection', async(req, res) => {
-        const id = req.params.id;
-        const query = { _id: ObjectId(id) };
-        const result = await userActionsProducts.deleteOne(query);
-        res.json(result);
-    })
+    app.get("/user/admin", async (req, res) => {
+      const cursor = usersCollection.find({ role: "admin" });
+      const users = await cursor.toArray();
+      res.send(users);
+    });
+
+    app.delete("/cartCollection", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await userActionsProducts.deleteOne(query);
+      res.json(result);
+    });
     //find admin role
     app.get("/users/:email", async (req, res) => {
       const email = req.params.email;
