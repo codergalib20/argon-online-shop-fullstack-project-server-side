@@ -63,7 +63,28 @@ async function run() {
       res.json(result);
       console.log(result);
     });
-
+    // Manage by delete All User and Admin action items Items
+    app.delete("/cartDel/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const product = await userActionsProducts.deleteOne(query);
+      res.send(product);
+    });
+    // Manage by OrderConfirm Cart Items
+    app.put("/cartOrder/:id", async (req, res) => {
+        const id = req.params.id;
+        const query = { _id: ObjectId(id) };
+        const product = await userActionsProducts.updateOne(query, {
+          $set: { status: "pending" },
+        });
+        res.send(product);
+    });
+    // Get all Order items_____________
+    app.get("/orderCollections", async (req, res) => {
+      const cursor = userActionsProducts.find({ status: "pending" });
+      const carts = await cursor.toArray();
+      res.send(carts);
+    });
     // **********************************Here All purchased Function
     //find all the order
     app.get("/purchased/allorder", async (req, res) => {
