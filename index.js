@@ -34,6 +34,12 @@ async function run() {
       const products = await cursor.toArray();
       res.send(products);
     });
+    // Create a new product_____________
+    app.post("/products", async (req, res) => {
+      const product = req.body;
+      const result = await productCollection.insertOne(product);
+      res.send(result);
+    });
     // search by ID
     app.get("/products/:id", async (req, res) => {
       const id = req.params.id;
